@@ -1,36 +1,34 @@
-# Via Frontend
-This challenge is to evaluate your frontend and software engineering skills. 
-Clean code, good architecture, design patterns, comments, etc. Imagine that this code will go into production.
-This assignment should take you no more than 4 hours to complete, but any extra polish or features won’t go unnoticed. 
-You have a week to finish the challenge, but please let us know if you need more time. 
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## The assignment
-We would like you to create an invoicing app. The features it should include:
-- [ ] View created invoices.
-- [ ] Create a new invoice.
-- [ ] Add line items to the invoices. Line items must include description, amount and currency.
-- [ ] Invoice must show total amount in USD. Connect with the exchange rate API of your preference.
+## Getting Started
 
-We handle a lot of currency conversions and money transactions on a day-to-day basis, so we will pay close attention to how you handle this. 
-No need to code anything for the backend, you can use any client-side storage to store the info. This is not a design role, so there are no specific design requirements, feel free to own it. Although this is not a design position, it is very important that you can translate design files (PSD, Figma, etc.) into code (HTML/CSS). 
+First, run the development server:
 
-#### Extra credit features
-Optional, only if you have some extra time.
-- [ ] Create at least one test for your code.
-- [ ] Search or filtering on the view invoices screen
-- [ ] Good UX.
-- [ ] Highly reusable components.
-- [ ] Responsive layout and design is a bonus. Please code that only if you have extra time.
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-## Requirements
-Use the following tools to accomplish this task:
-- Vue / React.
-- Use a state management library.
-- It’s okay to use create-react-app or similar tools.
-- It’s okay to use another framework like Nuxt / Next.
-- It’s okay to use third party libraries, but please comment on why you choose it.
-- It’s okay to use a CSS framework such as Bootstrap, Tailwind, Bulma, etc.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-If you have any questions, please ask!
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-To complete the challenge, please fork this repo and commit your work to your fork. When you are ready for us to look at it, give us access to your fork, so we can review it. Do not forget to put instructions on how to run your code.
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
