@@ -2,12 +2,26 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+This is a invoice creation system, to run it:
+```bash
+npm i
+# or
+yarn i
+```
 
 ```bash
 npm run dev
 # or
 yarn dev
+```
+
+## Testing
+
+run
+```bash
+npm run test
+# or
+yarn test
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

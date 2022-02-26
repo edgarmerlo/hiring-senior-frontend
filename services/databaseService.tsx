@@ -5,16 +5,19 @@ export class databaseService {
   static saveInvoice(data) {
     lockr.setPrefix('invoice_');
     const id = uuid();
-    lockr.set(id, data);
+    lockr.set(id, { ...data , id });
 
-    return true;
+    return id;
   }
 
   static getInvoice(uuid: string) {
-    return lockr.get(uuid);
+    lockr.setPrefix('invoice_');
+    const record = lockr.get(uuid);
+    return record;
   }
 
-  static getAll() {
-    return lockr.getAll(true);
+  static getAll(useId = false) {
+    lockr.setPrefix('invoice_');
+    return lockr.getAll(useId);
   }
 }

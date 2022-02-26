@@ -25,7 +25,7 @@ export const invoiceFormRules = (
       .string()
       .nonempty({ message: errorMessages.required })
       .max(35, { message: errorMessages.max }),
-    ...dynamicItemsValidation
+    item: { ...dynamicItemsValidation }
   };
 };
 

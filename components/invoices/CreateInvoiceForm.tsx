@@ -1,44 +1,53 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import TextField from '@mui/material/TextField';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { invoiceSchema } from 'schemas/invoiceSchema';
 import { databaseService } from 'services/databaseService';
 import { Typography } from "@mui/material";
 import Button from '@mui/material/Button';
 import { InnerContentContainer } from 'components/layout/InnerContentContainer';
 import { currencyService } from 'services/currencyService';
+import { useRouter } from 'next/router';
 
 interface Inputs {
   [key: string]: string,
 };
 
-export default function CreateInvoiceForm() {
-  const [amountOfItems, setAmountOfItems] = useState(0);
+const currency = new currencyService();
 
-  const { register, watch, control, handleSubmit, formState: { errors } } = useForm<Inputs>({
-    resolver: zodResolver(invoiceSchema(amountOfItems))
-    }
+const CreateInvoiceForm: React.FunctionComponent = () => {
+  const [amountOfItems, setAmountOfItems] = useState(0);
+  const router = useRouter();
+  const { register, watch, control, handleSubmit, formState: { errors } } = useForm<Inputs>(
   );
-  const watchItems = watch();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data, 'TOSAVE')
-    databaseService.saveInvoice(data);
+  const { remove } = useFieldArray({
+    control,
+    name: 'item',
+  });
+  const watchItems = watch('item');
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    if(data.item.length <= 0) {
+      return false;
+    }
+    const invoice = await databaseService.saveInvoice({ ...data, total: currency.getTotalFromItems(watchItems).MXN});
+    router.push(`/invoice/${invoice}`)
   }
 
   const addItem = (amount: number) => {
     setAmountOfItems(amount);
   }
-
   const removeItem = (amount: number) => {
     setAmountOfItems(amount);
+    remove(amount)
   }
 
-  React.useEffect(() => {
-    const subscription = watch((value, { name, type }) => console.log(value, name, type));
-    return () => subscription.unsubscribe();
-  }, [watch]);
-
+  
+  useEffect(() => {
+    async function init(): Promise<void> {
+      await currency.initialize();
+    }
+    init();
+  }, []);
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <TextField
@@ -47,6 +56,7 @@ export default function CreateInvoiceForm() {
         label="Concept"
         helperText={errors.concept?.message}
         variant="standard"
+        required
         {...register("concept")}
       />
       <InnerContentContainer>
@@ -62,32 +72,30 @@ export default function CreateInvoiceForm() {
           <InnerContentContainer>
             <TextField
               fullWidth
-              error={Boolean(errors[`item-${index + 1}-name`])}
               label="Item name"
               helperText={errors[`item-${index + 1}-name`]?.message}
               variant="standard"
               key={`name-${index + 1}`}
-              {...register(`item-${index + 1}-name`)}
+              required
+              {...register(`item.${index}.name`)}
             />
             <TextField
               fullWidth
-              error={Boolean(errors[`item-${index + 1}-description`])}
               label="Item description"
-              helperText={errors[`item-${index + 1}-description`]?.message}
               variant="standard"
               key={`description-${index + 1}`}
-              {...register(`item-${ index + 1}-description`)}
+              required
+              {...register(`item.${ index}.description`)}
             />
           </InnerContentContainer>
           <InnerContentContainer>
             <TextField
               type="number"
-              error={Boolean(errors[`item-${index + 1}-amount`])}
               label="Amount"
-              helperText={errors[`item-${index + 1}-amount`]?.message}
               variant="standard"
               key={`amount-${index + 1}`}
-              {...register(`item-${index + 1}-amount`)}
+              required
+              {...register(`item.${index}.amount`)}
             />
             <TextField
               label="Currency"
@@ -95,14 +103,19 @@ export default function CreateInvoiceForm() {
               aria-readonly
               value="MXN"
               key={`currency-${index + 1}`}
-              {...register(`item-${index + 1}-currency`)}
+              {...register(`item.${index}.currency`)}
             />
           </InnerContentContainer>
         </div>
       ))}
-      <InnerContentContainer>
-        {console.log(watchItems, errors, 'WATCHE')}
-        {/* Total: {currencyService.getTotalFromItems(watchItems)} */}
+      <InnerContentContainer>        
+        {
+          currency.currencyData &&
+          <>
+            Total MXN: {currency.getTotalFromItems(watchItems).MXN}<br />
+            Total USD: {currency.getTotalFromItems(watchItems).USD}
+          </>
+        }
       </InnerContentContainer>
       <InnerContentContainer>
         <Button variant="contained" type="submit">Save</Button>
@@ -110,3 +123,5 @@ export default function CreateInvoiceForm() {
     </form>
   );
 }
+
+export default CreateInvoiceForm;

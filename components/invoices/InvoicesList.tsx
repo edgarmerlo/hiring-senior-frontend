@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -13,12 +13,16 @@ interface InvoicesListProps {
     concept: string,
     id: string,
   }[] | [],
-  Icon?: React.FunctionComponent
+  Icon?: React.FunctionComponent,
+  fields: {key: string, label: string}[],
+  linkKey?: string
 }
 
 export const InvoicesList: React.FunctionComponent<InvoicesListProps> = ({
   invoices = [],
-  Icon = InboxIcon
+  Icon = InboxIcon,
+  fields = [],
+  linkKey
 }: InvoicesListProps) => {
   const router = useRouter();
   return (
@@ -28,21 +32,22 @@ export const InvoicesList: React.FunctionComponent<InvoicesListProps> = ({
           {invoices.map(invoice => (
             <>
               <ListItem alignItems="flex-start" >
-                <ListItemButton onClick={() => router.push(`/invoice/${invoice.id}`)}>
+                <ListItemButton onClick={() => linkKey ? router.push(`/invoice/${invoice[linkKey]}`) : ''}>
                   <ListItemIcon>
                     <Icon />
                   </ListItemIcon>
-                  <ListItemText
-                    primary={invoice.concept}
-                    secondary={
-                      <React.Fragment>
-                        <strong>
-                          Invoice number:
-                        </strong>
-                        { invoice.id }
-                      </React.Fragment>
-                    }
-                  />
+                  {fields.map((field, index) => (
+                    <ListItemText
+                      primary={
+                        <React.Fragment>
+                          <strong>
+                            {field.label}: 
+                          </strong>
+                          {invoice[field.key]}
+                        </React.Fragment>
+                      }
+                    />
+                  ))}
                 </ListItemButton>
               </ListItem>
               <Divider variant="inset" component="li" />

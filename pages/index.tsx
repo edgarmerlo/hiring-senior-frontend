@@ -1,9 +1,19 @@
 import type { NextPage } from 'next'
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head'
 import { MainLayout } from 'components/layout/MainLayout';
 import { InvoicesList } from 'components/invoices/InvoicesList';
+import { databaseService } from 'services/databaseService';
 
 const Home: NextPage = () => {
+  const [invoicesList, setInvoicesList] = useState([]);
+  useEffect(() => {
+    async function init(): Promise<void> {
+      const dbResponse = await databaseService.getAll();
+      setInvoicesList(dbResponse);
+    }
+    init();
+  }, []);
   return (
     <>
       <Head>
@@ -12,7 +22,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <MainLayout pageTitle="My invoices" >
-        <InvoicesList invoices={[{concept: 'hi', id:'111'}, {concept: 'factura 2', id:'ersgd'}]} />
+        <InvoicesList
+          invoices={invoicesList}
+          fields={[{ label: 'concept', key: 'concept' }, { label: 'Invoice ID', key: 'id' }]}
+          linkKey="id"
+        />
       </MainLayout>
     </>
   )
